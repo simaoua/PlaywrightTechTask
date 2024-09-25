@@ -72,7 +72,7 @@ test.describe('Authentication playwright tests', () => {
     await MainP.passOnboarding(bankingInformation)
 
     // Log out
-    MainP.logoutUser(page)
+    await MainP.logoutUser(page)
     await Helpers.verifyUrlContains(page, signInPageUrl)
     await Helpers.verifyScreenshot(page, theFirstScreenshot)
   })
@@ -136,7 +136,7 @@ test.describe('Authentication playwright tests', () => {
     await Helpers.verifyScreenshot(page, theSixthScreenshot, pixelDiff)
     
     // Logout User
-    MainP.logoutUser(page)
+    await MainP.logoutUser(page)
     await Helpers.verifyUrlContains(page, signInUrl)
     await Helpers.verifyScreenshot(page, theSeventhScreenshot, pixelDiff)
   })
