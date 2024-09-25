@@ -75,8 +75,4 @@ export class AuthenticationPage {
   async verifySignInError(expectedText: string) {
     await expect(this.signInError).toHaveText(expectedText)
   }
-
-
-
 }
-

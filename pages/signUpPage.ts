@@ -23,7 +23,7 @@ export class SignUpPage {
     this.usernameInput = page.locator('#username')
     this.passwordInput = page.locator('#password')
     this.confirmPasswordInput = page.locator('#confirmPassword')
-    this.signUpButton = page.locator('[data-test = "signup-submit"]') // rewrite using getByTestId ???
+    this.signUpButton = page.locator('[data-test = "signup-submit"]')
     this.firstNameError = page.locator('#firstName-helper-text')
     this.lastNameError = page.locator('#lastName-helper-text')
     this.usernameError = page.locator('#username-helper-text')

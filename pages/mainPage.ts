@@ -17,6 +17,7 @@ export class MainPage {
   readonly doneButton: Locator
   readonly transactionList: Locator
   readonly sidenavToggle: Locator
+  readonly logoutButton: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -34,6 +35,7 @@ export class MainPage {
     this.doneButton = page.locator('[data-test="user-onboarding-next"]')
     this.transactionList = page.locator('[data-test="transaction-list"]')
     this.sidenavToggle = page.locator('[data-test="sidenav-toggle"]')
+    this.logoutButton = page.locator('[data-test="sidenav-signout"]')
   }
 
   async verifyDialofWindowIsVisible() {
@@ -88,7 +90,14 @@ export class MainPage {
     if (!await Helpers.verifyIsDesktopMode(page)) {
       await this.sidenavToggle.click()
     }
-    await page.getByText('Logout').click()
+    await this.logoutButton.click()
+  }
+
+  async passOnboarding(bankingInfo: object) {
+    await this.clickNextButton()
+    await this.fillBankingInfo(bankingInfo)
+    await this.clickSaveButton()
+    await this.clickDoneButton()
   }
 }
 

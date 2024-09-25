@@ -1,10 +1,11 @@
-import { test, expect, } from '@playwright/test'
+import { test} from '@playwright/test'
 import { AuthenticationPage } from '../pages/authenticationPage'
 import { SignUpPage } from '../pages/signUpPage'
 import { MainPage } from '../pages/mainPage'
 import { HelpersFunctions } from '../helpers/helpersFunctions'
 
 let newUserInfo
+let pixelDiff = 650 // new user with random username is created, so every test there will be difference on the screenshot
 
 test.beforeEach(async ({ request, page }) => {
   const Helpers = new HelpersFunctions(page)
@@ -51,10 +52,14 @@ test.describe('Authentication playwright tests', () => {
     const AuthenticationP = new AuthenticationPage(page)
     const Helpers = new HelpersFunctions(page)
     const MainP = new MainPage(page)
-
     const homePageUrl = '/'
     const signInPageUrl = '/signin'
     const theFirstScreenshot = '3_1.png'
+    const bankingInformation = {
+      bankName: 'The Best Bank',
+      routingNumber: '123456789',
+      accountNumber: '987654321'
+    }
 
     // Log in with a user
     await AuthenticationP.loginToTheApp(newUserInfo.username, newUserInfo.password)
@@ -63,16 +68,8 @@ test.describe('Authentication playwright tests', () => {
     await Helpers.verifyUrlContains(page, homePageUrl)
     await Helpers.verifyExpiresCookieIsPresent(page)
 
-    // Close introduction modal
-    await MainP.clickNextButton()//?????
-    const bankingInformation = {//?????
-      bankName: 'The Best Bank',
-      routingNumber: '123456789',
-      accountNumber: '987654321'
-    }
-    await MainP.fillBankingInfo(bankingInformation) //?????
-    await MainP.clickSaveButton()//?????
-    await MainP.clickDoneButton()//?????
+    // Pass onboarding
+    await MainP.passOnboarding(bankingInformation)
 
     // Log out
     MainP.logoutUser(page)
@@ -80,66 +77,69 @@ test.describe('Authentication playwright tests', () => {
     await Helpers.verifyScreenshot(page, theFirstScreenshot)
   })
 
-  // test('should allow a visitor to sign-up, login, and logout', async ({ page }) => {
-  //   const userInfo = {
-  //     firstName: 'Bob',
-  //     lastName: 'Ross',
-  //     username: `PainterJoy90${Math.random()}`,
-  //     password: 's3cret',
-  //   }
-  //   const bankingInformation = {
-  //     bankName: 'The Best Bank',
-  //     routingNumber: '123456789',
-  //     accountNumber: '987654321'
-  //   }
-  //   const finishedWindowTexts = {
-  //     expectedTitleText: 'Finished',
-  //     expectedContentText: 'You\'re all set!We\'re excited to have you aboard the Real World App!'
-  //   }
-  //   const expectedTitle = 'Sign Up'
-  //   const AuthenticationP = new AuthenticationPage(page)
-  //   const SignUpP = new SignUpPage(page)
-  //   const MainP = new MainPage(page)
-  //   const Helpers = new HelpersFunctions(page)
-  //   const theFirstScreenshot = '4_1.png'
-  //   const theSecondScreenshot = '4_2.png'
+  test('should allow a visitor to sign-up, login, and logout', async ({ page }) => {
+    const AuthenticationP = new AuthenticationPage(page)
+    const SignUpP = new SignUpPage(page)
+    const MainP = new MainPage(page)
+    const Helpers = new HelpersFunctions(page)
+    const userInfo = {
+      firstName: 'Bob',
+      lastName: 'Ross',
+      username: `PainterJoy90${Helpers.randomLetters(3)}`,
+      password: 's3cret',
+    }
+    const bankingInformation = {
+      bankName: 'The Best Bank',
+      routingNumber: '123456789',
+      accountNumber: '987654321'
+    }
+    const finishedWindowTexts = {
+      expectedTitleText: 'Finished',
+      expectedContentText: 'You\'re all set!We\'re excited to have you aboard the Real World App!'
+    }
+    const expectedTitle = 'Sign Up'
+    const theFirstScreenshot = '4_1.png'
+    const theSecondScreenshot = '4_2.png'
+    const theThirdScreenshot = '4_3.png'
+    const theFourthScreenshot = '4_4.png'
+    const theFifthScreenshot = '4_5.png'
+    const theSixthScreenshot = '4_6.png'
+    const theSeventhScreenshot = '4_7.png'
+    const signInUrl = '/signin'
   
-  //   // Sign-up User
-  //   await AuthenticationP.clickSignUpLink()
-  //   await AuthenticationP.clickSignUpLink() // twice ???
-  //   await SignUpP.verifyPageTitle(expectedTitle)
-  //   await Helpers.verifyScreenshot(page, theFirstScreenshot)
-  //   await SignUpP.fillregistrtionData(userInfo)
-  //   await Helpers.verifyScreenshot(page, theSecondScreenshot)
-  //   await SignUpP.clickSignUpButton()
+    // Sign-up User
+    await AuthenticationP.clickSignUpLink()
+    await AuthenticationP.clickSignUpLink() // twice ???
+    await SignUpP.verifyPageTitle(expectedTitle)
+    await Helpers.verifyScreenshot(page, theFirstScreenshot)
+    await SignUpP.fillregistrtionData(userInfo)
+    await Helpers.verifyScreenshot(page, theSecondScreenshot, pixelDiff)
+    await SignUpP.clickSignUpButton()
   
-  //   // Login User
-  //   await AuthenticationP.loginToTheApp(userInfo.username, userInfo.password)
+    // Login User
+    await AuthenticationP.loginToTheApp(userInfo.username, userInfo.password)
   
-  //   // Onboarding
-  //   await MainP.verifyDialofWindowIsVisible()
-  //   await MainP.verifyIfSkeletonListExists(false)
-  //   await MainP.verifyIfNavTopNotificationCountExists(true)
-  //   // await expect(page).toHaveScreenshot('should-allow-a-visitor-to-sign-up-login-and-logout.png') ?????
-  //   await MainP.clickNextButton()
-  //   await MainP.verifyCreateBankAccountWindowTitle('Create Bank Account')
-  //   await MainP.fillBankingInfo(bankingInformation)
-  //   //     cy.visualSnapshot("About to complete User Onboarding");\
-  //   await MainP.clickSaveButton()
-  //   //     cy.wait("@gqlCreateBankAccountMutation");
-  //   await MainP.verifyFinishedWindowTexts(finishedWindowTexts)
-  //   //     cy.visualSnapshot("Finished User Onboarding");
-  //   await MainP.clickDoneButton()
-  //   await MainP.verifyTransactionListIsVisible()
-  //   //     cy.visualSnapshot("Transaction List is visible after User Onboarding");
-  
-  //   // Logout User
-  //   MainP.logoutUser(page)
-  //   await Helpers.verifyUrlContains(page, '/signin')
-  //   await Helpers.verifyScreenshot(page, '3_1.png')
-  //   //     cy.location("pathname").should("eq", "/signin");
-  //   //     cy.visualSnapshot("Redirect to SignIn");
-  // })
+    // Onboarding
+    await MainP.verifyDialofWindowIsVisible()
+    await MainP.verifyIfSkeletonListExists(false)
+    await MainP.verifyIfNavTopNotificationCountExists(true)
+    await Helpers.verifyScreenshot(page, theThirdScreenshot, pixelDiff)
+    await MainP.clickNextButton()
+    await MainP.verifyCreateBankAccountWindowTitle('Create Bank Account')
+    await MainP.fillBankingInfo(bankingInformation)
+    await Helpers.verifyScreenshot(page, theFourthScreenshot, pixelDiff)
+    await MainP.clickSaveButton()
+    await MainP.verifyFinishedWindowTexts(finishedWindowTexts)
+    await Helpers.verifyScreenshot(page, theFifthScreenshot, pixelDiff)
+    await MainP.clickDoneButton()
+    await MainP.verifyTransactionListIsVisible()
+    await Helpers.verifyScreenshot(page, theSixthScreenshot, pixelDiff)
+    
+    // Logout User
+    MainP.logoutUser(page)
+    await Helpers.verifyUrlContains(page, signInUrl)
+    await Helpers.verifyScreenshot(page, theSeventhScreenshot, pixelDiff)
+  })
 
   test('should display login errors', async ({ page }) => {
     const AuthenticationP = new AuthenticationPage(page)

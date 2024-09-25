@@ -2,15 +2,13 @@ import { expect, type Locator, type Page } from '@playwright/test'
 
 export class HelpersFunctions {
   readonly page: Page
-//   readonly onboardingDialogWindow: Locator
-
 
   constructor(page: Page) {
     this.page = page
   }
 
-  async verifyScreenshot(page: Page, screenshot: string) {
-    await expect(page).toHaveScreenshot(screenshot)
+  async verifyScreenshot(page: Page, screenshot: string, maxDiffPixels = 0) {
+    await expect(page).toHaveScreenshot(screenshot, { maxDiffPixels: maxDiffPixels })
   }
 
   async verifyUrlContains(page: Page, partOfUrl: string) {
@@ -27,7 +25,8 @@ export class HelpersFunctions {
   }
 
   async createNewUser(request, newUserInfo) {
-    const res = await request.post('http://localhost:3001/users',{
+    let apiUrl = 'http://localhost:3001' // move to config
+    const res = await request.post(`${apiUrl}/users`,{
       data:{
         "firstName": newUserInfo.firstName,
         "lastName": newUserInfo.lastName,
